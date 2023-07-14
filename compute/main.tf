@@ -58,7 +58,7 @@ resource "aws_autoscaling_group" "three_tier_bastion" {
 }
 
 
-# LAUNCH TEMPLATES AND AUTOSCALING GROUPS FOR FRONTEND APP TIER
+# LAUNCH TEMPLATES AND AUTOSCALING GROUPS FOR FRONTEND (WEB) TIER
 
 resource "aws_launch_template" "three_tier_app" {
   name_prefix            = "three_tier_app"
@@ -90,7 +90,7 @@ resource "aws_autoscaling_group" "three_tier_app" {
 }
 
 
-# LAUNCH TEMPLATES AND AUTOSCALING GROUPS FOR BACKEND
+# LAUNCH TEMPLATES AND AUTOSCALING GROUPS FOR BACKEND (APP) TIER
 
 resource "aws_launch_template" "three_tier_backend" {
   name_prefix            = "three_tier_backend"
