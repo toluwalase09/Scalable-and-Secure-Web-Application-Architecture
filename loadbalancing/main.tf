@@ -52,7 +52,6 @@ resource "aws_lb_listener" "front_end" {
   port              = var.https_listener_port
   protocol          = var.https_listener_protocol
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_acm_certificate.cert.arn
 
   default_action {
     type             = "forward"

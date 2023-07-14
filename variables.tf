@@ -18,6 +18,3 @@ variable "secret_name" {
   sensitive = true
 }
 
-variable "domain_name" {
-  type = string
-}
