@@ -39,7 +39,7 @@ resource "aws_internet_gateway" "three_tier_internet_gateway" {
 #Next up we will create the public subnets using a count variable to control the number we want. We will set up the cidr_block so that the subnets can exist within the specified VPC cidr range. The public subnet route table will route to the internet gateway. We will also create the NAT gateway that will connect with our private instances.
 
 
-### PUBLIC SUBNETS (WEB TIER) AND ASSOCIATED ROUTE TABLES
+### PUBLIC SUBNETS ( AND ASSOCIATED ROUTE TABLES
 
 resource "aws_subnet" "three_tier_public_subnets" {
   count                   = length(var.public_sn_cidr)
@@ -85,9 +85,9 @@ resource "aws_nat_gateway" "three_tier_ngw" {
   subnet_id     = aws_subnet.three_tier_public_subnets[1].id
 }
 
-#We will create the private subnets next that will reside in the application tier and database tier. Here will will associate a private route table with the NAT Gateway.
+#We will create the private subnets nextr. Here will will associate a private route table with the NAT Gateway.
 
-### PRIVATE SUBNETS (APP TIER & DATABASE TIER) AND ASSOCIATED ROUTE TABLES
+### PRIVATE SUBNETS (APP TIER & Web Tier & DATABASE TIER) AND ASSOCIATED ROUTE TABLES
 
 resource "aws_subnet" "three_tier_private_subnets" {
   count                   = length(var.private_sn_cidr)
