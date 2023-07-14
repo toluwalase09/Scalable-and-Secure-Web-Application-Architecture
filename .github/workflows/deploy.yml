@@ -1,0 +1,92 @@
+name: New Terraform and Ansible Deployment
+
+on:
+  workflow_dispatch:
+   inputs:
+     user_name:
+       description: 'Pass your user name'
+       type: string
+       required: true
+     ticket_number:
+       description: 'Pass your ticket number'
+       type: string
+       required: true
+     env:
+       description: 'Pass your env name'
+       type: string
+       required: true
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    
+#     defaults:
+#       run:
+#         working-directory: terraform
+#         shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.IAMROLE_GITHUB }}
+        role-session-name: GitHub-Action-Role
+        aws-region: "us-west-1"
+
+     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+
+      #Terraform Workspace
+    - name: Terraform Workspace
+      run: terraform workspace new ${{ inputs.ticket_number }} || terraform workspace select ${{ inputs.ticket_number }}
+
+#    # Checks that all Terraform configuration files adhere to a canonical format
+#    - name: Terraform Format
+#      run: terraform fmt -check
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ansible
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform plan -var instance_type=${{ inputs.instance_type }}  -var key_name=${{ inputs.key_name }} -var user_name=${{ inputs.user_name }} -var ticket_number=${{ inputs.ticket_number }}  -var env=${{ inputs.env }} -input=false -out tfplan
+
+      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Apply
+      run: terraform apply "tfplan"
+      
+    - name: Get EC2 instance IP
+      run: terraform output ec2_instance_ip > ip.txt
+
+    - name: Update inventory file with EC2 instance IP
+      run: |
+        echo "[ec2_instances]" > inventory.yaml
+        echo "ec2_instance ansible_host=$(cat ip.txt)" >> inventory.yaml
+
+    - name: Retrieve Key Pair from AWS SSM
+      run: |
+        aws ssm get-parameter --name "ansiblenew.pem" --with-decryption | jq -r '.Parameter.Value' > key_pair.txt
+
+    - name: Add Key Pair to Ansible Playbook
+      run: |
+        echo "- name: Deploy Key Pair" >> playbook.yml
+        echo "  become: yes" >> playbook.yml
+        echo "  authorized_key:" >> playbook.yml
+        echo "    user: ubuntu" >> playbook.yml
+        echo "    key: $(cat key_pair.txt)" >> playbook.yml
+
+    - name: Run Ansible Playbook
+      run: ansible-playbook -i inventory.yaml playbook.yml
