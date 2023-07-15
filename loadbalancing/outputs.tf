@@ -1,11 +1,11 @@
 # --- loadbalancing/outputs.tf --- 
 
 output "alb_dns" {
-  value = aws_lb.three_tier_lb.dns_name
+  value = aws_lb.three_tier_lb.zone_id
 }
 
 output "lb_endpoint" {
-  value = aws_lb.three_tier_lb.dns_name
+  value = aws_lb.three_tier_lb.zone_id
 }
 
 output "lb_tg_name" {
