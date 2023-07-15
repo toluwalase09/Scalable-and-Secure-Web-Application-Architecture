@@ -51,7 +51,7 @@ resource "aws_lb_listener" "front_end" {
   load_balancer_arn = aws_lb.three_tier_lb.arn
   port              = var.https_listener_port
   protocol          = var.https_listener_protocol
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  #ssl_policy        = "ELBSecurityPolicy-2016-08"
 
   default_action {
     type             = "forward"
