@@ -109,8 +109,8 @@ resource "aws_autoscaling_group" "three_tier_backend" {
   name                = "three_tier_backend"
   vpc_zone_identifier = var.private_subnets
   min_size            = 1
-  max_size            = 1
-  desired_capacity    = 1
+  max_size            = 2
+  desired_capacity    = 2
 
   launch_template {
     id      = aws_launch_template.three_tier_backend.id
