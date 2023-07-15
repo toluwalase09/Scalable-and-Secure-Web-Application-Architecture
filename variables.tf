@@ -30,3 +30,5 @@ variable "key_name"{
 variable "user_name"{
   type      = string
 }
+
+variable "env" {}
