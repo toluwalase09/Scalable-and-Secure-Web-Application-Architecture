@@ -18,3 +18,15 @@ variable "secret_name" {
   sensitive = true
 }
 
+variable "instance_type"{
+  type      = string
+}
+
+variable "key_name"{
+  type      = string
+
+} 
+
+variabe "user_name"{
+  type      = string
+}

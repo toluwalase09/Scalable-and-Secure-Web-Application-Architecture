@@ -2,23 +2,23 @@
 # --- compute/main.tf ---
 
 //Generate RSA key
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-//Save private key file for instance login
-resource "local_file" "private_file" {
-  filename        = "id_rsa.pem"
-  content         = tls_private_key.private_key.private_key_pem
-  file_permission = "0400"
-}
+# resource "tls_private_key" "private_key" {
+#   algorithm = "RSA"
+# }
+# //Save private key file for instance login
+# resource "local_file" "private_file" {
+#   filename        = "id_rsa.pem"
+#   content         = tls_private_key.private_key.private_key_pem
+#   file_permission = "0400"
+# }
 
-resource "aws_key_pair" "key_pair" {
-  key_name   = var.key_name
-  public_key = tls_private_key.private_key.public_key_openssh
-  tags = {
-    Name = "key_pair"
-  }
-}
+# resource "aws_key_pair" "key_pair" {
+#   key_name   = var.key_name
+#   public_key = tls_private_key.private_key.public_key_openssh
+#   tags = {
+#     Name = "key_pair"
+#   }
+# }
 
 #Now we will create our auto scaling groups in the private subnets. We will attach our scripts to the appropriate group. The bastion auto scaling group could be set as a single instance, but we will create an autoscaling group because a failed host will be replaced automatically if EC2 health checks are failed. Finally we will attach the frontend group to the internet facing load balancer.
 
@@ -37,7 +37,7 @@ resource "aws_launch_template" "three_tier_bastion" {
   instance_type          = var.instance_type
   image_id               = data.aws_ssm_parameter.three-tier-ami.value
   vpc_security_group_ids = [var.bastion_sg]
-  key_name               = aws_key_pair.key_pair.key_name
+  key_name               = var.key_name
 
   tags = {
     Name = "three_tier_bastion"
@@ -66,7 +66,7 @@ resource "aws_launch_template" "three_tier_app" {
   image_id               = data.aws_ssm_parameter.three-tier-ami.value
   vpc_security_group_ids = [var.frontend_app_sg]
   user_data              = filebase64("install_apache.sh")
-  key_name               = aws_key_pair.key_pair.key_name
+  key_name               = var.key_name
 
   tags = {
     Name = "three_tier_app"
@@ -97,7 +97,7 @@ resource "aws_launch_template" "three_tier_backend" {
   instance_type          = var.instance_type
   image_id               = data.aws_ssm_parameter.three-tier-ami.value
   vpc_security_group_ids = [var.backend_app_sg]
-  key_name               = aws_key_pair.key_pair.key_name
+  key_name               = var.key_name
   user_data              = filebase64("install_node.sh")
 
   tags = {

@@ -2,4 +2,6 @@ access_ip   = "0.0.0.0/0"
 db_name     = "threetierdb"
 dbuser      = "admin"
 #secret_name = "dbsecret"
-
+instance_type = "t2.micro"
+key_name    = "three_teir"
+user_name    = "Toluwalase"

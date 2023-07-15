@@ -9,6 +9,7 @@ locals {
   instance_type = "t2.micro"
   location      = "us-east-1"
   vpc_cidr      = "10.0.0.0/16"
+  key_name      = "three_teir"
 }
 
 module "networking" {
@@ -32,7 +33,7 @@ module "compute" {
   private_subnets        = module.networking.private_subnets
   bastion_instance_count = 1
   instance_type          = local.instance_type
-  key_name               = "Three-Tier-Terraform"
+  key_name               = var.key_name
   lb_tg                  = module.loadbalancing.lb_tg
 }
 
@@ -61,5 +62,4 @@ module "loadbalancing" {
   https_listener_port     = 443
   https_listener_protocol = "HTTPS"
   azs                     = 2
-  domain_name = var.domain_name
 }
