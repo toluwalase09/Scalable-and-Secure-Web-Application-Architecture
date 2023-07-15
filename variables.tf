@@ -27,6 +27,6 @@ variable "key_name"{
 
 } 
 
-variabe "user_name"{
+variable "user_name"{
   type      = string
 }
