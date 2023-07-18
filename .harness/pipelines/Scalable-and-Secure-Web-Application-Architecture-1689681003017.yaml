@@ -1,0 +1,33 @@
+pipeline:
+  identifier: Build_Scalable_and_Secure_Web_Application_Architecture_1689681020341
+  name: Build Scalable-and-Secure-Web-Application-Architecture
+  orgIdentifier: default
+  projectIdentifier: default_project
+  properties:
+    ci:
+      codebase:
+        build: <+input>
+        connectorRef: account.Github_OAuth_1689680965861
+        repoName: toluwalase09/Scalable-and-Secure-Web-Application-Architecture
+  stages:
+    - stage:
+        identifier: build
+        name: build
+        spec:
+          cloneCodebase: true
+          execution:
+            steps:
+              - step:
+                  identifier: echo
+                  name: echo
+                  spec:
+                    command: echo hello world
+                  timeout: ""
+                  type: Run
+          platform:
+            arch: Amd64
+            os: Linux
+          runtime:
+            spec: {}
+            type: Cloud
+        type: CI
