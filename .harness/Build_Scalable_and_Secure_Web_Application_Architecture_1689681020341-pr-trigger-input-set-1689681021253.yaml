@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_Scalable_and_Secure_Web_Application_Architecture_1689681020341-pr-trigger-input-set
+  identifier: Build_Scalable_and_Secure_Web_Application_Architecture_1689681020341prtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: default_project
+  pipeline:
+    identifier: Build_Scalable_and_Secure_Web_Application_Architecture_1689681020341
+    properties:
+      ci:
+        codebase:
+          build:
+            type: PR
+            spec:
+              number: <+trigger.prNumber>
